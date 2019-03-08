@@ -16,6 +16,12 @@ x = np.cos(u)*np.sin(v)
 y = np.sin(u)*np.sin(v)
 z = np.cos(v)
 sphere = ax.plot_wireframe(x, y, z, color="r")
+sphere.__setattr__('target', 1)
+
+
+def is_target(x, t='target'):
+    return hasattr(x, t)
+
 
 # draw cube
 r = [-1, 1]
@@ -44,4 +50,7 @@ class Arrow3D(FancyArrowPatch):
 a = Arrow3D([0, 1], [0, 1], [0, 1], mutation_scale=20,
             lw=1, arrowstyle="-|>", color="k")
 ax.add_artist(a)
+
+ax.findobj(is_target)[0].remove()
+
 plt.show()

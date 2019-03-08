@@ -1,5 +1,5 @@
 # code: utf-8
-import mpl_toolkits
+from mpl_toolkits.mplot3d import proj3d
 from matplotlib import animation
 import matplotlib.pyplot as plt
 import numpy as np
@@ -17,17 +17,23 @@ def init():
     y = np.sin(u)*np.sin(v)
     z = np.cos(v)
     sphere = ax.plot_wireframe(x, y, z, color="r")
+    sphere.__setattr__('target', 1)
     return sphere
+
+
+def is_target(x, t='target'):
+    return hasattr(x, t)
 
 
 def animate(i):
     u, v = np.mgrid[0:2*np.pi:20j, 0:np.pi:10j]
-    u += i
+    u += i*5
     x = np.cos(u)*np.sin(v)
     y = np.sin(u)*np.sin(v)
     z = np.cos(v)
-    ax.clear()
+    ax.findobj(is_target)[0].remove()
     sphere = ax.plot_wireframe(x, y, z, color="r")
+    sphere.__setattr__('target', 1)
     return sphere
 
 
