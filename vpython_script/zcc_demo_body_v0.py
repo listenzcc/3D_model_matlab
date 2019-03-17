@@ -89,19 +89,12 @@ class Arm:
 
         # update upper_arm
         self.upper_arm.axis = axis_0 * self.upper_arm_len
-        self.upper_arm_x0.axis = axis_0 * self.note_len
-        self.upper_arm_y0.axis = axis_1 * self.note_len
-        self.upper_arm_z0.axis = axis_2 * self.note_len
+        self.upper_arm_x.axis = axis_0 * self.note_len
+        self.upper_arm_y.axis = axis_1 * self.note_len
+        self.upper_arm_z.axis = axis_2 * self.note_len
 
+        # update joint_pos
         self.joint_pos = self.shoulder.pos + axis_0 * self.upper_arm_len
-
-        self.upper_arm_x1.pos = self.joint_pos
-        self.upper_arm_y1.pos = self.joint_pos
-        self.upper_arm_z1.pos = self.joint_pos
-
-        self.upper_arm_x1.axis = axis_0 * self.note_len
-        self.upper_arm_y1.axis = axis_1 * self.note_len
-        self.upper_arm_z1.axis = axis_2 * self.note_len
 
     def update_joint(self):
         self.joint.pos = self.joint_pos
@@ -111,6 +104,20 @@ class Arm:
         axis_0 = self.upper_arm_axis.norm()
         axis_2 = self.upper_arm_subaxis.norm()
         axis_1 = axis_0.cross(axis_2).norm()
+
+        # update small_arm
+        self.small_arm_x.pos = self.joint_pos
+        self.small_arm_x.axis = axis_0 * self.note_len
+        self.small_arm_x.rotate(
+            axis=axis_1, angle=radians(self.small_arm_flex))
+
+        self.small_arm_y.pos = self.joint_pos
+        self.small_arm_y.axis = axis_1 * self.note_len
+
+        self.small_arm_z.pos = self.joint_pos
+        self.small_arm_z.axis = axis_2 * self.note_len
+        self.small_arm_z.rotate(
+            axis=axis_1, angle=radians(self.small_arm_flex))
 
         self.small_arm.pos = self.joint.pos
         self.small_arm.axis = axis_0 * self.small_arm_len
@@ -151,30 +158,19 @@ class Arm:
                                   radius=self.upper_arm_rad,
                                   color=color.cyan, opacity=0.5)
 
-        # draw xyz 0
-        self.upper_arm_x0 = arrow(pos=self.shoulder_pos,
-                                  axis=axis_0*self.note_len,
-                                  color=color.red, radius=self.sketch_rad)
-        self.upper_arm_y0 = arrow(pos=self.shoulder_pos,
-                                  axis=axis_1*self.note_len,
-                                  color=color.green, radius=self.sketch_rad)
-        self.upper_arm_z0 = arrow(pos=self.shoulder_pos,
-                                  axis=axis_2*self.note_len,
-                                  color=color.blue, radius=self.sketch_rad)
+        # draw xyz
+        self.upper_arm_x = arrow(pos=self.shoulder_pos,
+                                 axis=axis_0*self.note_len,
+                                 color=color.red, radius=self.sketch_rad)
+        self.upper_arm_y = arrow(pos=self.shoulder_pos,
+                                 axis=axis_1*self.note_len,
+                                 color=color.green, radius=self.sketch_rad)
+        self.upper_arm_z = arrow(pos=self.shoulder_pos,
+                                 axis=axis_2*self.note_len,
+                                 color=color.blue, radius=self.sketch_rad)
 
         # cal joint_pos
         self.joint_pos = self.shoulder_pos + axis_0 * self.upper_arm_len
-
-        # draw xyz 1
-        self.upper_arm_x1 = arrow(pos=self.joint_pos,
-                                  axis=axis_0*self.note_len,
-                                  color=color.red, radius=self.sketch_rad)
-        self.upper_arm_y1 = arrow(pos=self.joint_pos,
-                                  axis=axis_1*self.note_len,
-                                  color=color.green, radius=self.sketch_rad)
-        self.upper_arm_z1 = arrow(pos=self.joint_pos,
-                                  axis=axis_2*self.note_len,
-                                  color=color.blue, radius=self.sketch_rad)
 
     def init_joint(self):
         # draw joint
@@ -193,6 +189,21 @@ class Arm:
                                   radius=self.small_arm_rad,
                                   color=color.cyan, opacity=0.5)
         self.small_arm.rotate(axis=axis_1, angle=radians(self.small_arm_flex))
+
+        # draw xyz
+        self.small_arm_x = arrow(pos=self.joint_pos,
+                                 axis=axis_0*self.note_len,
+                                 color=color.red, radius=self.sketch_rad)
+        self.small_arm_x.rotate(
+            axis=axis_1, angle=radians(self.small_arm_flex))
+        self.small_arm_y = arrow(pos=self.joint_pos,
+                                 axis=axis_1*self.note_len,
+                                 color=color.green, radius=self.sketch_rad)
+        self.small_arm_z = arrow(pos=self.joint_pos,
+                                 axis=axis_2*self.note_len,
+                                 color=color.blue, radius=self.sketch_rad)
+        self.small_arm_z.rotate(
+            axis=axis_1, angle=radians(self.small_arm_flex))
 
 
 scene.title = 'Arm v0'
@@ -260,7 +271,7 @@ moving_quzhou()
 moving_backing()
 
 while True:
-    m = input()
+    m = input('t: Taiqi, w: Waizhan, q: Quzhou, b: Backing.')
 
     if m == 't':
         moving_taiqi()
