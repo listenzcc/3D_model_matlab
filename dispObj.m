@@ -20,8 +20,9 @@ for i=1:size(obj.v,1)
     tval(i,1)=norm(obj.v(i,:)-cntr);
 end
 % display object
-figure
+
 obj.f.v(obj.f.v==0) = nan;
+fv = obj.f.v;
 fv = [];
 c = ([-6.50, 2.40, 0.05] + [-13.56, -2.75, 1.92]) / 2;
 ll = norm(c - [-6.50, 2.40, 0.05]) * 1.1;
@@ -36,13 +37,7 @@ for j = 1 : size(obj.f.v, 1)
         end
     end
 end
-% for j = 1 : size(obj.f.v, 1)
-%     fv = obj.f.v(j, :);
-%     if min(fv) == 0
-%         fv(fv==0) = max(fv);
-%     end
-%     obj.f.v(j, :) = fv;
-% end
+figure
 p=patch('vertices',obj.v,'faces', fv,'FaceVertexCData', tval);
 
 shading interp
@@ -55,6 +50,7 @@ axis square;
 axis off;
 axis equal
 axis tight;
-cameramenu
+%cameramenu
+cameratoolbar
 verts=get(p,'Vertices');
 faces=get(p,'Faces');
