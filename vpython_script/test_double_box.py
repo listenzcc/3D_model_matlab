@@ -13,3 +13,4 @@ print(box2)
 while True:
     rate(30)
     bb.rotate(axis=vector(1, 0, 0), angle=radians(2))
+    # invalid for box1 and box2
