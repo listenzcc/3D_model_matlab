@@ -10,5 +10,5 @@ obj = readwObj(fullfile('objs', 'malebody_BETA1.obj'));
 
 [verts, faces] = dispObj(obj);
 
-save(fullfile('parts', 'small_arm_f.txt'), 'faces', '-ascii')
-save(fullfile('parts', 'small_arm_v.txt'), 'verts', '-ascii')
+save(fullfile('parts', 'body_f.txt'), 'faces', '-ascii')
+save(fullfile('parts', 'body_v.txt'), 'verts', '-ascii')

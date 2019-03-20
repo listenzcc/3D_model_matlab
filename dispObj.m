@@ -23,20 +23,20 @@ end
 
 obj.f.v(obj.f.v==0) = nan;
 fv = obj.f.v;
-fv = [];
-c = ([-6.50, 2.40, 0.05] + [-13.56, -2.75, 1.92]) / 2;
-ll = norm(c - [-6.50, 2.40, 0.05]) * 1.1;
-for j = 1 : size(obj.f.v, 1)
-    x = obj.f.v(j, :);
-    for e = x
-        if isnan(e)
-            continue
-        end
-        if norm(obj.v(e, :) - c) < ll
-            fv = [fv; x];
-        end
-    end
-end
+% fv = [];
+% c = ([-6.50, 2.40, 0.05] + [-13.56, -2.75, 1.92]) / 2;
+% ll = norm(c - [-6.50, 2.40, 0.05]) * 1.1;
+% for j = 1 : size(obj.f.v, 1)
+%     x = obj.f.v(j, :);
+%     for e = x
+%         if isnan(e)
+%             continue
+%         end
+%         if norm(obj.v(e, :) - c) < ll
+%             fv = [fv; x];
+%         end
+%     end
+% end
 figure
 p=patch('vertices',obj.v,'faces', fv,'FaceVertexCData', tval);
 
