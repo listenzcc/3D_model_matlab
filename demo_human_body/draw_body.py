@@ -2,7 +2,7 @@
 
 import os
 import numpy as np
-from vpython import arrow, bumpmaps, color, compound, distant_light, quad, radians, rate, sphere, textures, triangle, vector, vertex
+from vpython import arrow, bumpmaps, box, color, compound, distant_light, quad, radians, rate, sphere, textures, triangle, vector, vertex
 
 p0 = vector(-13.75, -2.991, 1.813)
 p1 = vector(-7.382, 2.788, -0.2068)
@@ -30,6 +30,14 @@ with open(os.path.join('..', 'parts', 'body_v.txt'), 'rb') as pFile:
     while string:
         p = [float(e) for e in string.split()]
         points.append(vector(p[0], p[1], p[2]))
+        string = pFile.readline()
+
+points_n = [0]
+with open(os.path.join('..', 'parts', 'body_vn.txt'), 'rb') as pFile:
+    string = pFile.readline()
+    while string:
+        p = [float(e) for e in string.split()]
+        points_n.append(vector(p[0], p[1], p[2]))
         string = pFile.readline()
 
 
@@ -76,15 +84,18 @@ with open(os.path.join('..', 'parts', 'body_f.txt'), 'rb') as pFile:
 
 def draw_part(idx, color=vector(1, 0.7, 0.2)):  # color.gray(0.5)):
     print('Compounding %s ...' % idx)
-    part = compound([quad(vs=[vertex(pos=points[j], color=color, normal=points[j]) for j in f])
-                     for f in body_faces[idx]])
+    part = compound([quad(vs=[vertex(
+        pos=points[j], normal=points_n[j], color=color)
+        for j in f]) for f in body_faces[idx]])
     print('Done.')
     return part
 
 
+abox = box(pos=vector(0.02575, -5.062, 1.366)+up-front*2,
+           axis=right, length=10, width=10, height=6)
+abox.texture = {'file': textures.stones, 'bumpmaps': bumpmaps.stones}
+abox.shininess = 0
 body = draw_part('body')
-body.texture = {'file': textures.stones, 'bumpmaps': bumpmaps.stones}
-body.shininess = 0
 small_arm = draw_part('small_arm', color.green)
 upper_arm = draw_part('upper_arm', color.red)
 
