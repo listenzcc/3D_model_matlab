@@ -12,3 +12,4 @@ obj = readwObj(fullfile('objs', 'malebody_BETA1.obj'));
 
 save(fullfile('parts', 'body_f.txt'), 'faces', '-ascii')
 save(fullfile('parts', 'body_v.txt'), 'verts', '-ascii')
+save(fullfile('parts', 'body_vn.txt'), 'verts', '-ascii')
