@@ -3,11 +3,14 @@
 from vpython import arrow, box, bumpmaps, color, distant_light, radians, rate, scene, sphere, textures, vector
 from toolbox_draw_body import draw_part, p0, p1, p1_, p2, p2_
 
-# p2 = (p2 - p1*0.1) / 0.9
-
 up = vector(0, 1, 0)
 right = vector(-1, 0, 0)
 front = vector(0, 0, 1)
+
+p2 -= right*0.3
+p2_ -= right*0.3
+p2 -= up*0.2
+p2_ -= up*0.2
 
 
 def draw_anchor(p, a0=up, a1=right, a2=front, full=False):
@@ -53,7 +56,7 @@ upper_arm_sub_axis = upper_arm_main_axis.cross(front).cross(
 shoulder_anchor_pos = p2
 shoulder_anchor, shoulder_axis = draw_arm_anchor(
     shoulder_anchor_pos, upper_arm_main_axis, upper_arm_sub_axis,
-    radius=(p2-p2_).mag, color_=vector(1, 0.7, 0.2))
+    radius=(p2-p2_).mag*1.2, color_=vector(1, 0.7, 0.2))
 
 # small_arm init
 small_arm = draw_part('small_arm', color.green)

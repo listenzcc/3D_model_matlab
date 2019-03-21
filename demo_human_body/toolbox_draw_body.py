@@ -29,7 +29,7 @@ with open(os.path.join('..', 'parts', 'body_vn.txt'), 'rb') as pFile:
         string = pFile.readline()
 
 
-def is_in(p, start, stop):
+def is_in(p, start, stop, d=1.8):
     if (p-start).dot(stop-start) < 0:
         return False
     if (p-stop).dot(start-stop) < 0:
@@ -38,7 +38,7 @@ def is_in(p, start, stop):
     a = p - start
     b = p - stop
     c = start - stop
-    if abs(a.cross(b).mag / c.mag) > 1.8:
+    if abs(a.cross(b).mag / c.mag) > d:
         return False
 
     return True
@@ -60,7 +60,7 @@ with open(os.path.join('..', 'parts', 'body_f.txt'), 'rb') as pFile:
         if any(is_in(points[j], p0, p1) for j in f):
             body_faces_idx = 'small_arm'
 
-        if all(is_in(points[j], p1, p2) for j in f):
+        if all(is_in(points[j], p1, p2, d=1.6) for j in f):
             body_faces_idx = 'upper_arm'
 
         body_faces[body_faces_idx].append(f)
