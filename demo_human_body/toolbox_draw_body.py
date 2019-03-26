@@ -11,6 +11,15 @@ p2 = (vector(-4.735, 6.364, -1.425) + vector(-3.647, 4.584, -0.3449) +
       vector(-4.222, 6.02, -2.201)) / 3  # shoulder
 p2_ = vector(-4.735, 6.364, -1.425)
 
+pp_right_leg = vector(-4.14, -21.09, 4.1)
+p0_right_leg = vector(-4.154, -21.26, -1.964)
+p1_right_leg = vector(-3.87, -10.76, -0.1997)
+p2_right_leg = vector(-3.563, -3.918, -0.2727)
+
+pp_left_leg = vector(4.14, -21.09, 4.1)
+p0_left_leg = vector(4.154, -21.26, -1.964)
+p1_left_leg = vector(3.87, -10.76, -0.1997)
+p2_left_leg = vector(3.563, -3.918, -0.2727)
 
 points = [0]
 with open(os.path.join('..', 'parts', 'body_v.txt'), 'rb') as pFile:
@@ -48,6 +57,11 @@ body_faces = dict()
 body_faces['body'] = []
 body_faces['small_arm'] = []
 body_faces['upper_arm'] = []
+body_faces['small_right_leg'] = []
+body_faces['upper_right_leg'] = []
+body_faces['small_left_leg'] = []
+body_faces['upper_left_leg'] = []
+
 with open(os.path.join('..', 'parts', 'body_f.txt'), 'rb') as pFile:
     string = pFile.readline()
     while string:
@@ -62,6 +76,20 @@ with open(os.path.join('..', 'parts', 'body_f.txt'), 'rb') as pFile:
 
         if all(is_in(points[j], p1, p2, d=1.6) for j in f):
             body_faces_idx = 'upper_arm'
+
+        if any(is_in(points[j], pp_right_leg, p0_right_leg, d=3) for j in f):
+            body_faces_idx = 'small_right_leg'
+        if any(is_in(points[j], p0_right_leg, p1_right_leg, d=3.2) for j in f):
+            body_faces_idx = 'small_right_leg'
+        if any(is_in(points[j], p1_right_leg, p2_right_leg, d=3.1) for j in f):
+            body_faces_idx = 'upper_right_leg'
+
+        if any(is_in(points[j], pp_left_leg, p0_left_leg, d=3) for j in f):
+            body_faces_idx = 'small_left_leg'
+        if any(is_in(points[j], p0_left_leg, p1_left_leg, d=3.2) for j in f):
+            body_faces_idx = 'small_left_leg'
+        if any(is_in(points[j], p1_left_leg, p2_left_leg, d=3.1) for j in f):
+            body_faces_idx = 'upper_left_leg'
 
         body_faces[body_faces_idx].append(f)
         string = pFile.readline()
