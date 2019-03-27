@@ -87,11 +87,11 @@ with open(os.path.join('..', 'parts', 'body_f.txt'), 'rb') as pFile:
         if all(is_in(points[j], p1, p2, d=1.6) for j in f):
             body_faces_idx = 'upper_arm'
 
+        if any(is_in(points[j], p1_la, p2_la, d=1.6) for j in f):
+            body_faces_idx = 'upper_left_arm'
+
         if any(is_in(points[j], p0_la, p1_la) for j in f):
             body_faces_idx = 'small_left_arm'
-
-        if all(is_in(points[j], p1_la, p2_la, d=1.6) for j in f):
-            body_faces_idx = 'upper_left_arm'
 
         if any(is_in(points[j], pp_right_leg, p0_right_leg, d=3) for j in f):
             body_faces_idx = 'small_right_leg'

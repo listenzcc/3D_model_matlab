@@ -60,8 +60,8 @@ draw_anchor(up*15, full=True)
 #           axis=right, length=10, width=10, height=10)
 # abox.texture = {'file': textures.stones, 'bumpmaps': bumpmaps.stones}
 # abox.shininess = 0
-bbox = box(pos=vector(0, -4.5, 0),
-           axis=right, length=9, width=7, height=6)
+bbox = box(pos=vector(0, -9.5, 0),
+           axis=right, length=9, width=7, height=10)
 bbox.texture = {'file': textures.rug}
 bbox.shininess = 0
 
@@ -71,6 +71,7 @@ skincolor = vector(1, 0.7, 0.2)
 
 
 # right_leg init
+draw_part('upper_right_leg', skincolor)
 upper_right_leg = draw_part('upper_right_leg', skincolor)
 small_right_leg = draw_part('small_right_leg', skincolor)
 # right_leg sit motion
@@ -83,9 +84,9 @@ main_axis = (p1_right_leg-p2_right_leg).norm()
 sub_axis = main_axis.cross(front).cross(main_axis).norm()
 [e.rotate(origin=p2_right_leg, axis=main_axis.cross(sub_axis), angle=radians(90))
  for e in [upper_right_leg, small_right_leg, s]]
-sphere(pos=p2_right_leg+vector(2, 0, 0), radius=2, color=skincolor)
 
 # left_leg init
+draw_part('upper_left_leg', skincolor)
 upper_left_leg = draw_part('upper_left_leg', skincolor)
 small_left_leg = draw_part('small_left_leg', skincolor)
 # left_leg sit motion
@@ -98,7 +99,6 @@ main_axis = (p1_left_leg-p2_left_leg).norm()
 sub_axis = main_axis.cross(front).cross(main_axis).norm()
 [e.rotate(origin=p2_left_leg, axis=main_axis.cross(sub_axis), angle=radians(90))
  for e in [upper_left_leg, small_left_leg, s]]
-sphere(pos=p2_left_leg+vector(-2, 0, 0), radius=2, color=skincolor)
 
 
 # upper_left_arm init
@@ -153,8 +153,8 @@ upper_arm_sub_axis = upper_arm_main_axis.cross(front).cross(
 # shoulder anchor
 shoulder_anchor_pos = p2
 shoulder_anchor, shoulder_axis = draw_arm_anchor(
-    shoulder_anchor_pos, upper_arm_main_axis, upper_arm_sub_axis,
-    radius=(p2-p2_).mag, color_=skincolor)
+    shoulder_anchor_pos-right*0.2, upper_arm_main_axis, upper_arm_sub_axis,
+    radius=(p2-p2_).mag*1.1, color_=skincolor)
 
 # small_arm init
 small_arm = draw_part('small_arm', skincolor)
@@ -190,7 +190,7 @@ small_arm_main_axis = (hand_anchor.pos-joint_anchor.pos).norm()
 small_arm_sub_axis = small_arm_main_axis.cross(front).cross(
     small_arm_main_axis).norm()
 
-distant_light(direction=up*10, color=color.gray(0.8))
+distant_light(direction=up*10-front*2, color=color.gray(0.8))
 
 print('Click scene to continue')
 scene.waitfor('click keydown')
@@ -295,25 +295,40 @@ def motion_taishou(angle=radians(2)):
 
 def motion_shenchu(angle=radians(2)):
     print('Shenchuing ...')
-    for _ in range(30):
+    for _ in range(40):
         rate(30)
         axis = joint_axis[0].axis.cross(joint_axis[1].axis)
         origin = joint_anchor.pos
         [e.rotate(origin=origin, angle=angle, axis=axis)
          for e in [small_arm, hand_anchor] + joint_axis]
 
-    for _ in range(30):
-        rate(30)
-        axis = shoulder_axis[0].axis.cross(shoulder_axis[1].axis)
-        origin = shoulder_anchor.pos
-        [e.rotate(origin=origin, angle=angle, axis=axis)
-         for e in [upper_arm, joint_anchor, small_arm, hand_anchor] +
-         shoulder_axis + joint_axis]
+    time.sleep(0.5)
+    for __ in range(2):
+        for _ in range(40):
+            rate(30)
+            axis = shoulder_axis[0].axis.cross(shoulder_axis[1].axis)
+            origin = shoulder_anchor.pos
+            [e.rotate(origin=origin, angle=angle, axis=axis)
+             for e in [upper_arm, joint_anchor, small_arm, hand_anchor] +
+             shoulder_axis + joint_axis]
 
-        axis = joint_axis[0].axis.cross(joint_axis[1].axis)
-        origin = joint_anchor.pos
-        [e.rotate(origin=origin, angle=-angle, axis=axis)
-         for e in [small_arm, hand_anchor] + joint_axis]
+            axis = joint_axis[0].axis.cross(joint_axis[1].axis)
+            origin = joint_anchor.pos
+            [e.rotate(origin=origin, angle=-angle, axis=axis)
+             for e in [small_arm, hand_anchor] + joint_axis]
+
+        for _ in range(40):
+            rate(30)
+            axis = shoulder_axis[0].axis.cross(shoulder_axis[1].axis)
+            origin = shoulder_anchor.pos
+            [e.rotate(origin=origin, angle=-angle, axis=axis)
+             for e in [upper_arm, joint_anchor, small_arm, hand_anchor] +
+             shoulder_axis + joint_axis]
+
+            axis = joint_axis[0].axis.cross(joint_axis[1].axis)
+            origin = joint_anchor.pos
+            [e.rotate(origin=origin, angle=angle, axis=axis)
+             for e in [small_arm, hand_anchor] + joint_axis]
     print('Done.')
 
 
@@ -329,7 +344,7 @@ def motion_back():
 
 
 while True:
-    print('Press q for quzhou, t for taishou, w for waizha, b for back')
+    print('Press q for quzhou, t for taishou, w for waizha, s for shenshou, b for back')
     ev = scene.waitfor('click keydown')
     if ev.event == 'click':
         print('Clicked at', ev.pos)
@@ -349,8 +364,6 @@ while True:
                 time.sleep(0.2)
                 motion_back()
         if ev.key == 's':
-            for _ in range(2):
-                motion_shenchu()
-                motion_back()
+            motion_shenchu()
         if ev.key == 'b':
             motion_back()
