@@ -1,6 +1,7 @@
 # coding: utf-8
 
 from vpython import arrow, box, bumpmaps, color, distant_light, radians, rate, scene, sphere, textures, vector
+import time
 from toolbox_draw_body import draw_part
 from toolbox_draw_body import p0, p1, p1_, p2, p2_
 from toolbox_draw_body import p0_la, p1_la, p1__la, p2_la, p2__la
@@ -318,10 +319,12 @@ def motion_shenchu(angle=radians(2)):
 
 def motion_back():
     print('Backing ...')
+    time.sleep(0.2)
     while True:
         rate(30)
         if not motion_backing():
             break
+    time.sleep(0.2)
     print('Done.')
 
 
@@ -333,12 +336,21 @@ while True:
     else:
         print('Pressed key', ev.key)
         if ev.key == 't':
-            motion_taishou()
+            for _ in range(2):
+                motion_taishou()
+                motion_back()
         if ev.key == 'q':
-            motion_quzhou()
+            for _ in range(2):
+                motion_quzhou()
+                motion_back()
         if ev.key == 'w':
-            motion_waizhan()
+            for _ in range(2):
+                motion_waizhan()
+                time.sleep(0.2)
+                motion_back()
         if ev.key == 's':
-            motion_shenchu()
+            for _ in range(2):
+                motion_shenchu()
+                motion_back()
         if ev.key == 'b':
             motion_back()
