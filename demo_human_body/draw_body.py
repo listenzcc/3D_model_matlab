@@ -3,6 +3,7 @@
 from vpython import arrow, box, bumpmaps, color, distant_light, radians, rate, scene, sphere, textures, vector
 from toolbox_draw_body import draw_part
 from toolbox_draw_body import p0, p1, p1_, p2, p2_
+from toolbox_draw_body import p0_la, p1_la, p1__la, p2_la, p2__la
 from toolbox_draw_body import pp_right_leg, p0_right_leg, p1_right_leg, p2_right_leg
 from toolbox_draw_body import pp_left_leg, p0_left_leg, p1_left_leg, p2_left_leg
 
@@ -12,13 +13,16 @@ right = vector(-1, 0, 0)
 front = vector(0, 0, 1)
 
 p2 -= up*0.2
+p2_la -= up*0.2
 # p2 -= right*0.3
 # p2_ -= right*0.3
 # p2 -= up*0.2
 # p2_ -= up*0.2
 
+visible = False
 
-def draw_anchor(p, a0=up, a1=right, a2=front, full=False, visible=False):
+
+def draw_anchor(p, a0=up, a1=right, a2=front, full=False, visible=visible):
     # draw anchor and regular axis
     if full:
         arrow(pos=p, radius=0.5, axis=a0.norm()*4,
@@ -30,7 +34,7 @@ def draw_anchor(p, a0=up, a1=right, a2=front, full=False, visible=False):
     return sphere(pos=p, radius=0.5, color=color.white, visible=visible)
 
 
-def draw_arm_anchor(p, a0, a1, radius=0.5, color_=color.white, visible=False):
+def draw_arm_anchor(p, a0, a1, radius=0.5, color_=color.white, visible=visible):
     # draw anchor
     # a0: main_axis
     # a1: sub_axis
@@ -64,6 +68,7 @@ bbox.shininess = 0
 body = draw_part('body')
 skincolor = vector(1, 0.7, 0.2)
 
+
 # right_leg init
 upper_right_leg = draw_part('upper_right_leg', skincolor)
 small_right_leg = draw_part('small_right_leg', skincolor)
@@ -95,6 +100,50 @@ sub_axis = main_axis.cross(front).cross(main_axis).norm()
 sphere(pos=p2_left_leg+vector(-2, 0, 0), radius=2, color=skincolor)
 
 
+# upper_left_arm init
+upper_left_arm = draw_part('upper_left_arm', skincolor)
+upper_left_arm_main_axis = (p1_la-p2_la).norm()
+upper_left_arm_sub_axis = upper_left_arm_main_axis.cross(front).cross(
+    upper_left_arm_main_axis).norm()
+# left_shoulder anchor
+left_shoulder_anchor_pos = p2_la
+left_shoulder_anchor, left_shoulder_axis = draw_arm_anchor(
+    left_shoulder_anchor_pos, upper_left_arm_main_axis, upper_left_arm_sub_axis,
+    radius=(p2_la-p2__la).mag, color_=skincolor)
+
+# small_left_arm init
+small_left_arm = draw_part('small_left_arm', skincolor)
+small_left_arm_main_axis = (p0_la-p1_la).norm()
+small_left_arm_sub_axis = small_left_arm_main_axis.cross(front).cross(
+    small_left_arm_main_axis).norm()
+# left_joint anchor
+left_joint_anchor_pos = p1_la
+left_joint_anchor, left_joint_axis = draw_arm_anchor(
+    left_joint_anchor_pos, small_left_arm_main_axis, small_left_arm_sub_axis,
+    radius=0.8, color_=skincolor)
+
+# left_hand anchor
+left_hand_anchor_pos = p0_la
+left_hand_anchor = draw_anchor(left_hand_anchor_pos)
+
+# regular left_arm
+[e.rotate(origin=p2_la, axis=upper_left_arm_sub_axis, angle=radians(-20))
+ for e in [upper_left_arm, left_joint_anchor, small_left_arm, left_hand_anchor] +
+ left_shoulder_axis + left_joint_axis]
+# modify init left axis
+upper_left_arm_main_axis = (
+    left_joint_anchor.pos-left_shoulder_anchor.pos).norm()
+upper_left_arm_sub_axis = upper_left_arm_main_axis.cross(front).cross(
+    upper_left_arm_main_axis).norm()
+small_left_arm_main_axis = (left_hand_anchor.pos-left_joint_anchor.pos).norm()
+small_left_arm_sub_axis = small_left_arm_main_axis.cross(front).cross(
+    small_left_arm_main_axis).norm()
+[e.rotate(origin=left_joint_anchor.pos, axis=small_left_arm_main_axis,
+          angle=radians(80)) for e in [small_left_arm]]
+[e.rotate(origin=left_joint_anchor.pos, axis=small_left_arm_sub_axis, angle=radians(-20))
+ for e in [small_left_arm, left_hand_anchor]+left_joint_axis]
+
+
 # upper_arm init
 upper_arm = draw_part('upper_arm', skincolor)
 upper_arm_main_axis = (p1-p2).norm()
@@ -114,15 +163,35 @@ small_arm_sub_axis = small_arm_main_axis.cross(front).cross(
 # joint anchor
 joint_anchor_pos = p1
 joint_anchor, joint_axis = draw_arm_anchor(
-    joint_anchor_pos, small_arm_main_axis, small_arm_sub_axis)
+    joint_anchor_pos, small_arm_main_axis, small_arm_sub_axis,
+    radius=0.8, color_=skincolor)
 
 # hand anchor
 hand_anchor_pos = p0
 hand_anchor = draw_anchor(hand_anchor_pos)
 
+# regular arm
+[e.rotate(origin=p2, axis=upper_arm_sub_axis, angle=radians(20))
+ for e in [upper_arm, joint_anchor, small_arm, hand_anchor] +
+ shoulder_axis + joint_axis]
+# modify init axis
+upper_arm_main_axis = (joint_anchor.pos-shoulder_anchor.pos).norm()
+upper_arm_sub_axis = upper_arm_main_axis.cross(front).cross(
+    upper_arm_main_axis).norm()
+small_arm_main_axis = (hand_anchor.pos-joint_anchor.pos).norm()
+small_arm_sub_axis = small_arm_main_axis.cross(front).cross(
+    small_arm_main_axis).norm()
+[e.rotate(origin=joint_anchor.pos, axis=small_arm_main_axis,
+          angle=radians(-80)) for e in [small_arm]]
+[e.rotate(origin=joint_anchor.pos, axis=small_arm_sub_axis, angle=radians(20))
+ for e in [small_arm, hand_anchor]+joint_axis]
+small_arm_main_axis = (hand_anchor.pos-joint_anchor.pos).norm()
+small_arm_sub_axis = small_arm_main_axis.cross(front).cross(
+    small_arm_main_axis).norm()
+
 distant_light(direction=up*10, color=color.gray(0.8))
 
-print('Press ENTER to continue')
+print('Click scene to continue')
 scene.waitfor('click keydown')
 
 
@@ -196,7 +265,7 @@ def motion_waizhan(angle=radians(2/1.5)):
 
 def motion_quzhou(angle=radians(2)):
     print('Quzhou ...')
-    for _ in range(50):
+    for _ in range(55):
         rate(30)
         axis = joint_axis[0].axis.cross(joint_axis[1].axis)
         origin = joint_anchor.pos

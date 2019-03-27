@@ -11,6 +11,14 @@ p2 = (vector(-4.735, 6.364, -1.425) + vector(-3.647, 4.584, -0.3449) +
       vector(-4.222, 6.02, -2.201)) / 3  # shoulder
 p2_ = vector(-4.735, 6.364, -1.425)
 
+p0_la = vector(13.75, -2.991, 1.813)  # finger end
+p1_la = (vector(7.382, 2.788, -0.2068) + vector(6.331, 1.749, -1.528) +
+         vector(5.594, 2, -0.4682)) / 3  # joint
+p1__la = vector(7.382, 2.788, -0.2068)
+p2_la = (vector(4.735, 6.364, -1.425) + vector(3.647, 4.584, -0.3449) +
+         vector(4.222, 6.02, -2.201)) / 3  # shoulder
+p2__la = vector(4.735, 6.364, -1.425)
+
 pp_right_leg = vector(-4.14, -21.09, 4.1)
 p0_right_leg = vector(-4.154, -21.26, -1.964)
 p1_right_leg = vector(-3.87, -10.76, -0.1997)
@@ -57,6 +65,8 @@ body_faces = dict()
 body_faces['body'] = []
 body_faces['small_arm'] = []
 body_faces['upper_arm'] = []
+body_faces['small_left_arm'] = []
+body_faces['upper_left_arm'] = []
 body_faces['small_right_leg'] = []
 body_faces['upper_right_leg'] = []
 body_faces['small_left_leg'] = []
@@ -76,6 +86,12 @@ with open(os.path.join('..', 'parts', 'body_f.txt'), 'rb') as pFile:
 
         if all(is_in(points[j], p1, p2, d=1.6) for j in f):
             body_faces_idx = 'upper_arm'
+
+        if any(is_in(points[j], p0_la, p1_la) for j in f):
+            body_faces_idx = 'small_left_arm'
+
+        if all(is_in(points[j], p1_la, p2_la, d=1.6) for j in f):
+            body_faces_idx = 'upper_left_arm'
 
         if any(is_in(points[j], pp_right_leg, p0_right_leg, d=3) for j in f):
             body_faces_idx = 'small_right_leg'
