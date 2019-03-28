@@ -60,9 +60,12 @@ draw_anchor(up*15, full=True)
 #           axis=right, length=10, width=10, height=10)
 # abox.texture = {'file': textures.stones, 'bumpmaps': bumpmaps.stones}
 # abox.shininess = 0
-bbox = box(pos=vector(0, -9.5, 0),
-           axis=right, length=9, width=7, height=10)
+bbox = box(pos=front*(-1)+up*(-10),
+           axis=front, height=10, width=10, length=6)
+cbox = box(pos=front*(-4)+up*(-3),
+           axis=front, height=5, width=10, length=1)
 bbox.texture = {'file': textures.rug}
+cbox.texture = {'file': textures.rug}
 bbox.shininess = 0
 
 # body init
