@@ -307,7 +307,7 @@ def motion_shenchu(angle=radians(2)):
 
     time.sleep(0.5)
     for __ in range(2):
-        for _ in range(40):
+        for _ in range(30):
             rate(30)
             axis = shoulder_axis[0].axis.cross(shoulder_axis[1].axis)
             origin = shoulder_anchor.pos
@@ -320,7 +320,9 @@ def motion_shenchu(angle=radians(2)):
             [e.rotate(origin=origin, angle=-angle, axis=axis)
              for e in [small_arm, hand_anchor] + joint_axis]
 
-        for _ in range(40):
+        time.sleep(0.2)
+
+        for _ in range(30):
             rate(30)
             axis = shoulder_axis[0].axis.cross(shoulder_axis[1].axis)
             origin = shoulder_anchor.pos
